@@ -201,3 +201,29 @@ describe.client.only('Another use case', () => {
 ## Contributing
 
 Please refer to the [main repo contributing info](https://github.com/SUI-Components/sui/blob/master/CONTRIBUTING.md).
+
+## Best practices
+
+### Avoid using `revert` in your tests
+We could do it easily with `revert`. The problem comes when we forget to revert the stub and the mock is affecting other tests.
+
+A better approach would be to create a mock file next to the file we want to mock (the real one).
+
+### Avoid creating new spies in your tests
+It's a common practice to create spies to assert if a function has been called.
+The problem is that spies are not restored automatically after each test, so you have to do it manually.
+
+A better approach is to use `sinon.spy()` to create a spy on an existing function. This way, the spy will be restored automatically after each test.
+
+```javascript
+// Do
+sinon.spy(console, 'error')
+expect(console.error.calledOnce).to.be.true
+// Don't
+const spy = sinon.spy()
+myFunc(spy)
+expect(spy.calledOnce).to.be.true
+```
+
+## Coverage
+By default, a `coverage` folder will be created with an HTML reporter.
